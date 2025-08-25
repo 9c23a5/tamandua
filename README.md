@@ -17,11 +17,7 @@ WEBHOOK_URL=https://discord.com/api/webhooks/channel_id/secret
 USER_ID="enable developer settings on discord + right click your username + copy userid"
 ```
 
-4. Add this line to your cron file. Or create a systemd service. or just run init.sh manually. who cares. you're free
-
-```
-*/30 8-20 * * * ~/tamandua/init.sh
-```
+4. Automate running init.sh with your favourite tool. It assumes you're using mise, feel free to use your favourite ruby ver manager
 
 ### Limitations
 
