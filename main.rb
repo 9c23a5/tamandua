@@ -9,7 +9,8 @@ $http = HTTP.headers(
   user_agent: "tamandua/0.1 (Ruby #{RUBY_VERSION})"
 ).accept(:json)
 
-def webhook(message)
+def webhook(message, error: false)
+  message = ":warnning: #{message}" if error
   $http.post(
     webhook_url,
     body: { content: message, allowed_mentions: { users: [user_id] }}.to_json
@@ -18,7 +19,7 @@ end
 
 def build_message(data)
   unless data.keys.all? { EXPECTED_KEYS.include?(it) }
-    return webhook(":warn: Unexpected keys: #{data.keys}")
+    return webhook("Unexpected keys: #{data.keys}", error: true)
   end
 
   $ping_user = false
@@ -79,8 +80,8 @@ if response.status.success?
     data = JSON.parse(response.body.to_s)
     webhook(build_message(data))
   rescue JSON::ParserError => e
-      webhook(":warn: Failed to parse JSON: #{e.message}")
+      webhook("Failed to parse JSON: #{e.message}", error: true)
   end
 else
-  webhook(":warn: Failed to fetch data: #{response.status}")
+  webhook("Failed to fetch data: #{response.status}", error: true)
 end
