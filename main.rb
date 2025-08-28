@@ -10,7 +10,7 @@ $http = HTTP.headers(
 ).accept(:json)
 
 def webhook(message, error: false)
-  message = ":warnning: #{message}" if error
+  message = ":warning: #{message}" if error
   $http.post(
     webhook_url,
     body: { content: message, allowed_mentions: { users: [user_id] }}.to_json
