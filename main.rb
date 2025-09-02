@@ -10,7 +10,7 @@ $http = HTTP.headers(
 ).accept(:json)
 
 def webhook(message, error: false)
-  message = ":warning: #{message}" if error
+  message = ":warning: #{message} <@#{user_id}>" if error
   $http.post(
     webhook_url,
     body: { content: message, allowed_mentions: { users: [user_id] }}.to_json
@@ -30,7 +30,7 @@ def build_message(data)
 
     times = data.dig(key, "times") || []
     if times.empty?
-      message << "No events\n"
+      message << "No appointments available\n"
     else
       $ping_user = true
       message += times.map do |time_object|
