@@ -4,11 +4,9 @@ schlorping appointments for you since 2025
 
 ![the schlorper](https://github.com/user-attachments/assets/6d51add6-eedd-438f-a16b-f1c5b0162633)
 
-(aka: what unmedicated adhd does to a mf)
-
 ### Installation
 
-1. Pull this repo (obvs lol)
+1. Pull this repo
 2. Install required version of Ruby as per Gemfile. Use rbenv + ruby-build, mise, etc...
 3. Either export these env variables on your shell, or create a .env file in the tamandua directory like this:
 
