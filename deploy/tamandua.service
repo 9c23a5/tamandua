@@ -1,0 +1,9 @@
+[Unit]
+Description=tamandua
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/tamandua
+EnvironmentFile=/etc/tamandua/env
+User=tamandua
+Group=tamandua

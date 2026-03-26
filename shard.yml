@@ -1,0 +1,13 @@
+name: tamandua
+version: 0.1.0
+
+authors:
+  - 9c32a5
+
+targets:
+  tamandua:
+    main: src/tamandua.cr
+
+crystal: '>= 1.19.1'
+
+license: MIT

@@ -1,0 +1,72 @@
+on:
+  push:
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install Crystal
+        uses: crystal-lang/install-crystal@v1.9.1
+        with:
+          crystal: 1.19.1
+      - name: Install dependencies
+        run: shards install
+      - name: Run tests
+        run: crystal spec
+  upload_artifact:
+    needs: test
+    continue-on-error: true
+    strategy:
+      matrix:
+        include:
+          - platform: linux-x86_64
+            runner: ubuntu-latest
+          - platform: linux-arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    name: Build and upload artifact (${{ matrix.platform }})
+    steps:
+      - name: Install Crystal
+        uses: crystal-lang/install-crystal@v1.9.1
+        with:
+          crystal: 1.19.1
+      - uses: actions/checkout@v6
+      - name: Install dependencies
+        run: shards install --production
+      - name: Build
+        run: |
+          docker buildx build --output type=local,dest=./release .
+      - name: Upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: tamandua-${{ matrix.platform }}
+          path: ./release
+          if-no-files-found: error
+
+  deploy:
+    needs: upload_artifact
+    # todo: change to main before merging
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: tamandua-linux-x86_64
+          path: ./release
+      - name: Deploy via SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
+          chmod +x ./release/tamandua
+          scp -i ~/.ssh/deploy_key ./release/tamandua "$SSH_USER@$SSH_HOST:/tmp/tamandua"
+          ssh -i ~/.ssh/deploy_key "$SSH_USER@$SSH_HOST" "sudo install -m 755 /tmp/tamandua /usr/local/bin/tamandua && rm /tmp/tamandua"
