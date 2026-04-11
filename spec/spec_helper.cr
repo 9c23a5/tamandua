@@ -1,5 +1,5 @@
 ENV["DISCORD_WEBHOOK_URI"] = "https://discord.com/api/webhooks/channel_id/secret"
-ENV["USER_ID"] = "my_user_id"
+ENV["USER_ID"] = "sample_user_id"
 
 require "spec"
 

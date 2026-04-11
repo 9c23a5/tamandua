@@ -1,4 +1,5 @@
 require "./appointment"
+require "./configuration"
 
 module Tamandua
   module MessageBuilder
