@@ -8,7 +8,8 @@ module Tamandua
         "No appointments available"
       else
         "Available appointments:\n" + appointments.map { |appointment| "- #{appointment.date}" }.join("\n") +
-          "\n:cat2: There may be a new appointment <@#{Configuration.discord_user_id}>"
+          "\n:cat2: There may be a new appointment" +
+          (Configuration.discord_user_id ? " <@#{Configuration.discord_user_id}>" : "")
       end
     end
   end

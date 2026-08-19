@@ -12,8 +12,8 @@ module Tamandua
       URI.parse(ENV["WEBHOOK_URL"]? || raise(MissingEnvException.new("WEBHOOK_URL")))
     end
 
-    def self.discord_user_id : String
-      ENV["USER_ID"]? || raise(MissingEnvException.new("USER_ID"))
+    def self.discord_user_id : String | Nil
+      ENV["USER_ID"]?
     end
   end
 end
